@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Admin Dashboard</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      color: #F3F3F3;
+      background-color: #F4F4F4; 
+    }
+    header {
+      background-color: #333333;
+      color: white;
+      padding: 10px 20px; 
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    header h1 {
+      margin: 0; 
+    }
+    .user-actions {
+      display: flex;
+    }
+    .button {
+      background-color: #007BFF; 
+      margin: 0 5px; 
+      color: #fff;
+      border: none;
+      padding: 10px 15px; 
+      cursor: pointer;
+      text-decoration: none; 
+      display: inline-block;
+      border-radius: 5px; 
+    }
+    .first_container{
+      border: 1px solid black;
+      margin: 5px;
+      border-radius: 25px;
+      padding: 1em;
+   }
+   .show-more-button {
+      background-color: #007BFF; 
+      color: #fff;
+      border: none;
+      padding: 10px 20px;
+      cursor: pointer;
+    }
+    .reccomended_section{
+      
+      display: grid;
+      grid-auto-rows: 250px;
+      grid-template-columns: repeat(5, 3fr);
+    }
+
+   .reccomended_section > div {
+        border: 1px solid black;
+        border-radius: 25px;
+        background-color: lightslategray;
+        padding: 1em;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between; 
+        align-items: center;
+        
+    }
+
+    .button1 {
+        align-self: center;
+        margin-top: auto; 
+        background-color: #007BFF; 
+        margin: 0 5px; 
+        color: #fff;
+        border: none;
+        padding: 10px 15px; 
+        cursor: pointer;
+        text-decoration: none; 
+        display: inline-block;
+        border-radius: 5px; 
+    }
+
+   .first_container{
+      border: 1px solid black;
+      margin: 5px;
+      border-radius: 25px;
+      padding: 1em;
+   }
+   .section-details {
+      margin:5px;
+        }
+    .content {
+      display: grid;
+      padding: 15px;
+      color: black;
+    }
+    .content h2 {
+      font-size: 24px;
+    }
+    .book-requests {
+      display: grid;
+      grid-auto-rows: 250px;
+      grid-template-columns: repeat(5, 3fr);
+      padding: 10px;
+      margin-top: 20px; 
+    }
+
+    .request-item {
+      border: 1px solid black;
+      border-radius: 25px;
+      background-color: lightslategray;
+      padding: 1em;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      align-items: center;
+      height: auto; 
+    }
+    .internal-div{
+      margin: 10px;
+    }
+  </style>
+</head>
+<body>
+    <header>
+        <h1>Welcome, {{ username }}</h1>
+        <div class="user-actions">
+          <div class="search-bar">
+            <form action="/admin_search" method="GET">
+                <input type="text" name="query" placeholder="Search books/Section" required>
+                <button class="button" type="submit">Search</button>
+            </form>
+          </div>
+          <a href="{{ url_for('upload_book') }}"><button class="button">Upload a book</button></a>
+          <a href="{{ url_for('add_book_section') }}"><button class="button">Create Section</button></a> 
+          <a href="{{ url_for('admin_stats') }}"><button class="button">Profile</button></a>
+          <a href="{{ url_for('admin_logout') }}"><button class="button">Log Out</button></a>
+        </div>
+      </header>
+  <div class="content">
+    <div class="first_container">
+
+      {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div style="color: green; text-align: center;">
+                    <strong>{{ messages[0][1] }}</strong>
+                </div>
+            {% endif %}
+      {% endwith %} 
+
+
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+            <h3 style="color: black;">ALL SECTION</h3>
+            <a href="{{ url_for('all_section') }}"><button class="show-more-button">show-more</button></a>
+        </div>
+        <div class="reccomended_section">
+
+          <div class="internal-div">
+              <div class="section-details">
+                  <strong style="color: white; font-size: 25px;">All the books with no section</strong> 
+              </div>
+              <div class="section-details">
+                  <strong style="color: white;"></strong> 
+              </div>
+              <a href="{{ url_for('books_with_no_section') }}"><button class="button1">Go to this list of books</button></a>
+          </div>
+
+
+            {% for section in latest_section %}
+                <div class="internal-div">
+                    <div class="section-details">
+                        <strong style="color: white; font-size: 25px;">{{ section.title }}</strong> 
+                    </div>
+                    <div class="section-details">
+                        <strong style="color: white;">{{ section.description }}</strong> 
+                    </div>
+                    <a href="{{ url_for('section_detail', section_id=section.id) }}"><button class="button1">Go to this section</button></a>
+                </div>
+            {% endfor %}
+        </div>
+        
+        
+    </div>
+  </div>
+
+  <div class="first_container">
+    <h2 style="color: black;">Book Requests</h2>
+    <div class="reccomended_section">
+        {% for request in book_requests %}
+            <div>
+                <div class="section-details">
+
+                    <strong style="color: white; font-size: 20px;">Request ID: {{ request.id }}</strong>
+                    <p>User: {{ request.user.username }}</p>
+                    <p>Book Title: {{ request.book.title }}</p>
+                    <p>Requested On: {{ request.requested_on.strftime('%Y-%m-%d %H:%M:%S') }}</p>
+                    <p>Status: {{ request.status }}</p>
+                </div>
+                <div>
+
+                    <a href="{{ url_for('accept_book_request', request_id=request.id) }}"><button class="button1">Approve</button></a>
+                    <a href="{{ url_for('deny_book_request', request_id=request.id) }}" class="button">Deny</a>
+
+                </div>
+            </div>
+        {% else %}
+            <p>No book requests found.</p>
+        {% endfor %}
+    </div>
+</div>
+
+
+</body>
+</html>

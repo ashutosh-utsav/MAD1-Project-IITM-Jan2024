@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Lib-X Purchase Confirmation</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #F4F4F4;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .purchase-container {
+            text-align: center;
+            padding: 20px;
+            border-radius: 5px;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+
+        h1 {
+            color: #333;
+        }
+
+        p {
+            color: #666;
+            margin: 10px 0;
+        }
+
+        button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            background-color: #007BFF;
+            color: white;
+            cursor: pointer;
+            margin: 5px;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        .button-deny {
+            background-color: #dc3545;
+        }
+
+        .button-deny:hover {
+            background-color: #c82333;
+        }
+    </style>
+</head>
+<body>
+    <div class="purchase-container">
+        <h1>Welcome to the Lib-X purchase page</h1>
+        <p>You are buying <strong style="color: black;"> {{ book.title }} </strong> at 199 rupees</p>
+        <p>Please confirm to buy the book <strong style="color: black;">or</strong> deny to return to homepage</p>
+        <button onclick="confirmPurchase()">Confirm and pay</button>
+        <form action="{{ url_for('deny_purchase') }}" method="post">
+            <button class="button-deny" type="submit">Deny and go to homepage</button>
+        </form>
+        
+    </div>
+
+    <script>
+        function confirmPurchase() {
+            
+            window.open("https://drive.google.com/file/d/1PLPO5HA5JNmKu_j3U0yK57UNR-IOaBbx/view?usp=drive_link", '_blank');
+            
+            
+            window.location.href = "{{ url_for('confirm_purchase', book_id=book.id) }}";
+        }
+
+    </script>
+</body>
+</html>

@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Login</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            flex-direction: column; /* Added for better alignment */
+        }
+
+
+        .login-container {
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            padding: 40px;
+            width: 300px;
+            text-align: center;
+        }
+
+        h2 {
+            color: #333;
+        }
+
+        .input-group {
+            margin: 20px 0;
+        }
+
+        .input-group input {
+            width: calc(100% - 22px); /* Adjusted input width */
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+            margin: 5px 0;
+        }
+
+        .input-group label {
+            display: block;
+            text-align: left;
+            margin: 5px;
+            color: #777;
+        }
+
+        .login-button {
+            background-color: #007BFF;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+
+        .login-button:hover {
+            background-color: #0056b3;
+        }
+
+        p {
+            color: #777;
+            font-size: 14px; /* Adjusted font size */
+        }
+
+        .alert-danger {
+            color: red;
+            font-size: 14px; /* Adjusted font size */
+            margin-bottom: 15px; /* Added margin for separation */
+        }
+    </style>
+
+
+</head>
+<body>
+
+    <div class="login-container">
+        <h2>User Login</h2>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div class="alert-danger">
+                    {{ messages[0][1] }}
+                </div>
+            {% endif %}
+        {% endwith %}
+
+        <form action="{{ url_for('login') }}" method="POST"> 
+            <div class="input-group">
+                <label for="username">Username:</label>
+                <input type="text" id="username" name="username" placeholder="Enter your username" required>
+            </div>
+            <div class="input-group">
+                <label for="password">Password:</label>
+                <input type="password" id="password" name="password" placeholder="Enter your password" required>
+            </div>
+            <button class="login-button" type="submit">Login</button>
+        </form>
+        <p style="font-size: 15px;">Don't have an account? <a href="{{ url_for('signup') }}">Sign up</a></p>
+        <p style="color: red; background-color: aqua; margin-top: 50px; font-size: 15px;"><a href="{{ url_for('home') }}">Go to home page</a></p>
+    </div>
+</body>
+</html>

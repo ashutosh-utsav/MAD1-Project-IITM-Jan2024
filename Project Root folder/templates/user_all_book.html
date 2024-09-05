@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+ <html lang="en">
+ <head>
+   <meta charset="UTF-8">
+   <title>All books user</title>
+   <style>
+     body {
+       font-family: Arial, sans-serif;
+       margin: 0;
+       padding: 0;
+       color: #F3F3F3;
+       background-color: #F4F4F4; 
+     }
+     header {
+       background-color: #333333;
+       color: white;
+       padding: 10px 20px; 
+       display: flex;
+       justify-content: space-between;
+       align-items: center;
+     }
+     header h1 {
+       margin: 0; 
+     }
+     .user-actions {
+       display: flex;
+     }
+     .button {
+       background-color: #007BFF; 
+       margin: 0 5px; 
+       color: #fff;
+       border: none;
+       padding: 10px 15px; 
+       cursor: pointer;
+       text-decoration: none; 
+       display: inline-block;
+       border-radius: 5px; 
+     }
+     .first_container{
+       border: 1px solid black;
+       margin: 5px;
+       border-radius: 25px;
+       padding: 1em;
+    }
+    .show-more-button {
+       background-color: #007BFF; 
+       color: #fff;
+       border: none;
+       padding: 10px 20px;
+       cursor: pointer;
+     }
+ 
+    .first_container{
+       border: 1px solid black;
+       margin: 5px;
+       border-radius: 25px;
+       padding: 1em;
+    }
+    .section-details {
+       margin:5px;
+         }
+     .content {
+       display: grid;
+       padding: 15px;
+       color: black;
+     }
+     .content h2 {
+       font-size: 24px;
+     }
+     .reccomended_section {
+       display: grid;
+       grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); 
+       gap: 10px; 
+       padding: 10px;
+     }
+ 
+     .reccomended_section > div {
+       border: 1px solid black;
+       border-radius: 25px;
+       background-color: lightslategray;
+       padding: 1em;
+       display: flex;
+       flex-direction: column;
+       justify-content: space-between;
+       align-items: center;
+       height: 200px; 
+     }
+ 
+     .button1 {
+       align-self: center;
+       margin-top: auto; 
+       background-color: #007BFF; 
+       margin: 0 5px; 
+       color: #fff;
+       border: none;
+       padding: 10px 15px; 
+       cursor: pointer;
+       text-decoration: none; 
+       display: inline-block;
+       border-radius: 5px; 
+     }
+     .book-details {
+            color: black;
+            margin-bottom: 10px; 
+        }
+
+     .book-title {
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+     .book-author, .book-quantity {
+            font-size: 18px; 
+        }
+ 
+ 
+   </style>
+ </head>
+ <body>
+   <header>
+     <h1>Welcome, {{ name }}</h1>
+     <div class="user-actions">
+        <div class="search-bar">
+            <form action="/search" method="GET">
+                <input type="text" name="query" placeholder="Search Books/Section" required>
+                <button class="button" type="submit">Search</button>
+            </form>
+        </div>
+       <a href="{{ url_for('dashboard') }}"><button class="button">Dashboard</button></a>
+       <a href="{{ url_for('logout') }}"><button class="button">Log Out</button></a>
+     </div>
+   </header>
+   <div class="content">
+     <div class="first_container">
+       <div style="display: flex; justify-content: space-between; align-items: center;">
+         <h2 class="all_books" style="text-align: center; color:#333333">All The Latest Books</h2>
+       </div>
+       <div class="reccomended_section">
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    <div style="color: red; text-align: center;">
+                        <strong>{{ messages[0][1] }}</strong>
+                    </div>
+                {% endif %}
+        {% endwith %} 
+
+         {% for book in latest_book %}
+         <div>
+            <div class="book-details book-title">{{ book.title }}</div>
+            <div class="book-details book-author">Author: {{ book.author }}</div>
+            <div class="book-details book-quantity">Available quantity: {{ book.quantity }}</div>
+            
+            <form action="{{ url_for('request_book', book_id=book.id) }}" method="post">
+                <button class="button1" type="submit">Request This Book</button>
+            </form>
+            <a href="{{ url_for('purchase_page',  book_id=book.id ) }}"><button class="button">Buy this book</button></a>
+        </div>
+         {% endfor %}
+       </div>
+     </div>
+   </div>
+ 
+ </body>
+ </html>
+ 
+ 

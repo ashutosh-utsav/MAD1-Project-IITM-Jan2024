@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Home</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background: #f4f4f4;
+  }
+  .navbar {
+    background-color: #333333;
+    color: white;
+    padding: 15px;
+    text-align: center;
+  }
+  .user{
+    color: white;
+    padding: 14px 20px;
+    text-decoration: none;
+    display: inline-block;
+  }
+  .librarian{
+    color: white;
+    padding: 14px 20px;
+    text-decoration: none;
+    display: inline-block;
+  }
+  .navbar a:hover {
+    background-color: #ddd;
+    color: black;
+  }
+  .main {
+    padding: 15px;
+    text-align: center;
+  }
+  .main h1 {
+    color: #333;
+  }
+  .librarian {
+    background: #555;
+    color: white;
+    padding: 10px;
+    text-align: right;
+  }
+</style>
+</head>
+<body>
+
+<div class="navbar">
+  <a href="{{ url_for('login') }}" class="user">User Login</a>
+  <a href="{{ url_for('signup') }}" class="user" >User Sign Up</a>
+  <a href="{{ url_for('admin_login') }}" class="librarian">Librarian Login</a>
+</div>
+    
+<div class="main">
+  <h1>Welcome to the friendly neighborhood Library</h1>
+  <p>Access a wide variety of books, journals, and publications.</p>
+</div>
+{% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div style="color: red; text-align: center;">
+                    <strong>{{ messages[0][1] }}</strong>
+                </div>
+            {% endif %}
+{% endwith %} 
+
+</body>
+</html>
+
+

@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create a section</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
+
+        .registration-container {
+            background-color: #fff;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            padding: 40px;
+            width: 350px;
+            text-align: center;
+        }
+
+        h2 {
+            color: #333;
+        }
+
+        .input-group {
+            margin: 20px;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+            margin: 5px 0;
+        }
+
+        .input-group label {
+            display: block;
+            text-align: left;
+            margin: 5px;
+            color: #777;
+        }
+
+        .registration-button {
+            background-color: #007BFF;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+
+        .registration-button:hover {
+            background-color: #0056b3;
+        }
+
+        p {
+            color: #777;
+        }
+    </style>
+</head>
+<body>
+    <div class="registration-container">
+        <h2>Create a section</h2>
+        <form action="{{ url_for('add_book_section') }}" method="post">
+            <div class="input-group">
+                <label for="title">Title:</label>
+                <input type="text" id="title" name="title" required>
+            </div>
+
+            <div class="input-group">
+                <label for="description">Description:</label>
+                <textarea id="description" name="description"></textarea>
+            </div>
+            
+            <button class="registration-button" type="submit">Create</button>
+        </form>
+        <p>Dont want to create a section ? go back to dashboard  ?<a href="{{ url_for('admin_dashboard') }}">  Dashboard</a></p>
+    </div>
+</body>
+</html>
+
+
+

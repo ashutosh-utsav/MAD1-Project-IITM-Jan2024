@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>all section</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      color: #F3F3F3;
+      background-color: #F4F4F4; 
+    }
+    header {
+      background-color: #333333;
+      color: white;
+      padding: 10px 20px; 
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    header h1 {
+      margin: 0; 
+    }
+    .user-actions {
+      display: flex;
+    }
+    .button {
+      background-color: #007BFF; 
+      margin: 0 5px; 
+      color: #fff;
+      border: none;
+      padding: 10px 15px; 
+      cursor: pointer;
+      text-decoration: none; 
+      display: inline-block;
+      border-radius: 5px; 
+    }
+    .first_container{
+      border: 1px solid black;
+      margin: 5px;
+      border-radius: 25px;
+      padding: 1em;
+   }
+   .show-more-button {
+      background-color: #007BFF; 
+      color: #fff;
+      border: none;
+      padding: 10px 20px;
+      cursor: pointer;
+    }
+
+   .first_container{
+      border: 1px solid black;
+      margin: 5px;
+      border-radius: 25px;
+      padding: 1em;
+   }
+   .section-details {
+      margin:5px;
+        }
+    .content {
+      display: grid;
+      padding: 15px;
+      color: black;
+    }
+    .content h2 {
+      font-size: 24px;
+    }
+    .reccomended_section {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); 
+      gap: 10px; 
+      padding: 10px;
+    }
+
+    .reccomended_section > div {
+      border: 1px solid black;
+      border-radius: 25px;
+      background-color: lightslategray;
+      padding: 1em;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      align-items: center;
+      height: 250px; 
+    }
+
+    .button1 {
+      align-self: center;
+      margin-top: auto; 
+      background-color: #007BFF; 
+      margin: 0 5px; 
+      color: #fff;
+      border: none;
+      padding: 10px 15px; 
+      cursor: pointer;
+      text-decoration: none; 
+      display: inline-block;
+      border-radius: 5px; 
+    }
+
+
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Welcome, {{ username }}</h1>
+    <div class="user-actions">
+      <div class="search-bar">
+        <form action="/admin_search" method="GET">
+            <input type="text" name="query" placeholder="Search Books/Section" required>
+            <button class="button" type="submit">Search</button>
+        </form>
+      </div>
+      <a href="{{ url_for('admin_dashboard') }}"><button class="button">Dashboard</button></a>
+      <a href="{{ url_for('upload_book') }}"><button class="button">Upload a book</button></a>
+      <a href="{{ url_for('add_book_section') }}"><button class="button">Create Section</button></a> 
+      <a href="{{ url_for('admin_stats') }}"><button class="button">Profile</button></a>
+      <a href="{{ url_for('admin_logout') }}"><button class="button">Log Out</button></a>
+    </div>
+  </header>
+  <div class="content">
+    <div class="first_container">
+      <div style="display: flex; justify-content: space-between; align-items: center;">
+        <h2 class="all_books" style="text-align: center; color:#333333">All The Latest Section</h2>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+              {% if messages %}
+                  <div style="color: green; text-align: center;">
+                      <strong>{{ messages[0][1] }}</strong>
+                  </div>
+              {% endif %}
+        {% endwith %}
+
+
+      </div>
+      <div class="reccomended_section">
+        {% for section in latest_section %}
+          <div>
+            <div class="section-details">
+              <strong style="color: black; font-size: 25px;">{{ section.title }}</strong> 
+            </div>
+            <div class="section-details">
+              <strong style="color: black;">{{ section.description }}</strong> 
+            </div>
+            <a href="{{ url_for('section_detail', section_id=section.id) }}"><button class="button1">Go to this section</button></a>
+            <a href="{{ url_for('edit_section', section_id=section.id) }}"><button class="button1">Edit Section</button></a>
+            <form action="{{ url_for('delete_section', section_id=section.id) }}" method="post">
+              <button class="button1" type="submit">Delete Section</button>
+            </form>
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+
+</body>
+</html>
+

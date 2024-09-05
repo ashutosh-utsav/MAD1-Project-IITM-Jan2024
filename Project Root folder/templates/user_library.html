@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ user.name }}'s Library</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            color: #F3F3F3;
+            background-color: #F4F4F4;
+        }
+        header {
+            background-color: #333333;
+            color: white;
+            padding: 10px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+    
+        }
+        header h1{
+            margin: 0;
+        }
+        .user-actions {
+            display: flex;
+        }
+        .button, .button1 {
+            background-color: #007BFF;
+            margin: 0 5px;
+            color: #fff;
+            border: none;
+            padding: 10px 15px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            border-radius: 5px;
+        }
+        .first_container {
+            border: 1px solid black;
+            margin: 5px;
+            border-radius: 25px;
+            padding: 1em;
+        }
+        .show-more-button {
+            background-color: #007BFF;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+        }
+        .reccomended_section {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 10px;
+            padding: 10px;
+        }
+        .reccomended_section > div {
+            border: 1px solid black;
+            border-radius: 25px;
+            background-color: lightslategray;
+            padding: 1em;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: center;
+            height: 200px;
+        }
+        .book-details {
+            color: black;
+            margin-bottom: 10px;
+        }
+        .book-title {
+            font-size: 20px;
+            font-weight: bold;
+        }
+        .book-author, .book-quantity {
+            font-size: 18px;
+        }
+
+        .modal {
+           display: none; 
+           position: fixed; 
+           z-index: 1; 
+           left: 0;
+           top: 0;
+           width: 100%; 
+           height: 100%; 
+           overflow: auto; 
+           background-color: rgb(0,0,0); 
+           background-color: rgba(0,0,0,0.4); 
+           padding-top: 60px;
+       }
+
+       .modal-content {
+           background-color: #fefefe;
+           color: black;
+           margin: auto;
+           padding: 20px;
+           border: 1px solid #888;
+           width: 80%;
+       }
+
+       .close {
+           color: black;
+           float: right;
+           font-size: 28px;
+           font-weight: bold;
+       }
+
+       .close:hover,
+       .close:focus {
+           color: #000;
+           text-decoration: none;
+           cursor: pointer;
+       }
+
+
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Welcome {{ user.name }}</h1>
+        <div class="user-actions">
+            <div class="search-bar">
+                <form action="/search" method="GET">
+                    <input type="text" name="query" placeholder="Search books/sections" required>
+                    <button class="button" type="submit">Search</button>
+                </form>
+            </div>
+            <a href="{{ url_for('dashboard') }}"><button class="button">Dashboard</button></a>
+            <a href="{{ url_for('logout') }}"><button class="button">Log Out</button></a>
+        </div>
+    </header>
+    <div class="content">
+        <div class="first_container">
+
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                        {% if messages %}
+                            <div style="color: green; text-align: center;">
+                                <strong>{{ messages[0][1] }}</strong>
+                            </div>
+                        {% endif %}
+            {% endwith %} 
+
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <h2 class="all_books" style="text-align: center; color:#333333">{{ user.name }}'s Library</h2>
+            </div>
+            <div class="reccomended_section">
+                {% if user.owned_books.all() %}
+                    {% for book in user.owned_books.all() %}
+                        <div>
+                            <div class="book-details book-title">{{ book.title }}</div>
+                            <div class="book-details book-author">Author: {{ book.author }}</div>
+                            <button class="button" onclick="openModal('{{ book.title }}', '{{ book.content | escape }}')">View Content</button>
+                            <form action="{{ url_for('return_book', book_id=book.id) }}" method="post">
+                                <button class="button" type="submit">Return Book</button>
+                            </form>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <p>The library is empty.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <div id="myModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2 id="modalTitle"></h2>
+            <p id="modalContent"></p>
+        </div>
+    </div>
+
+    <script>
+
+        var modal = document.getElementById('myModal');
+
+   
+        var span = document.getElementsByClassName("close")[0];
+
+        function openModal(title, content) {
+            document.getElementById('modalTitle').innerText = title;
+            document.getElementById('modalContent').innerText = content;
+            modal.style.display = "block";
+        }
+
+        span.onclick = function() {
+            modal.style.display = "none";
+        }
+
+        window.onclick = function(event) {
+            if (event.target == modal) {
+                modal.style.display = "none";
+            }
+        }
+    </script>
+</body>
+</html>
+

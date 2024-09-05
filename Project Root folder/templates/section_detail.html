@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Section Details</title>
+    <style>
+        
+        body {
+       font-family: Arial, sans-serif;
+       margin: 0;
+       padding: 0;
+       color: #F3F3F3;
+       background-color: #F4F4F4; 
+     }
+     header {
+       background-color: #333333;
+       color: white;
+       padding: 10px 20px; 
+       display: flex;
+       justify-content: space-between;
+       align-items: center;
+     }
+     header h1 {
+       margin: 0; 
+     }
+     .user-actions {
+       display: flex;
+     }
+     .button {
+       background-color: #007BFF; 
+       margin: 0 5px; 
+       color: #fff;
+       border: none;
+       padding: 10px 15px; 
+       cursor: pointer;
+       text-decoration: none; 
+       display: inline-block;
+       border-radius: 5px; 
+     }
+
+
+        .book-card {
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            background-color: #ffffff;
+            padding: 15px;
+            margin-bottom: 10px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .book-card h3 {
+            color: #333333;
+            font-size: 20px;
+            margin-top: 0;
+        }
+
+        .book-card p {
+            color: #666666;
+            font-size: 16px;
+        }
+
+        .book-card form {
+            margin-top: 10px;
+        }
+
+        .book-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .book-actions input[type="number"] {
+            padding: 5px;
+            margin-right: 5px;
+        }
+
+        /* Overwriting button styles to match previous styling */
+        .button1, form button {
+            background-color: #007BFF; 
+            margin: 5px; 
+            color: #fff;
+            border: none;
+            padding: 10px 20px; 
+            cursor: pointer;
+            text-decoration: none; 
+            display: inline-block;
+            border-radius: 5px; 
+        }
+
+        form button:hover, .button1:hover {
+            background-color: #0056b3;
+        }
+
+        .modal {
+            display: none; /* Hidden by default */
+            position: fixed; /* Stay in place */
+            z-index: 1; /* Sit on top */
+            left: 0;
+            top: 0;
+            width: 100%; /* Full width */
+            height: 100%; /* Full height */
+            overflow: auto; /* Enable scroll if needed */
+            background-color: rgb(0,0,0); /* Fallback color */
+            background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+            padding-top: 60px;
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            color: black;
+            margin: auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+        }
+
+        .close {
+            color: black;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: #000;
+            text-decoration: none;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Welcome, {{ username }}</h1>
+        <div class="user-actions">
+            <div class="search-bar">
+                <form action="/admin_search" method="GET">
+                    <input type="text" name="query" placeholder="Search Books/Section" required>
+                    <button class="button" type="submit">Search</button>
+                </form>
+              </div>
+            <a href="{{ url_for('admin_dashboard') }}"><button class="button">Dashboard</button></a>
+            <a href="{{ url_for('upload_book') }}"><button class="button">Upload a book</button></a>
+            <a href="{{ url_for('add_book_section') }}"><button class="button">Create Section</button></a>
+            <a href="{{ url_for('admin_stats') }}"><button class="button">Profile</button></a>
+            <a href="{{ url_for('admin_logout') }}"><button class="button">Log Out</button></a>
+        </div>
+    </header>
+    <div class="content">
+        <div class="first_container">
+            <h2 class="all_books" style="text-align: center; color:#333333">All Books in {{ section.title }}</h2>
+
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                    {% if messages %}
+                        <div style="color: red; text-align: center;">
+                            <strong>{{ messages[0][1] }}</strong>
+                        </div>
+                    {% endif %}
+            {% endwith %} 
+
+
+            <div class="reccomended_section">
+                {% for book in books %}
+                    <div class="book-card">
+                        <h3>{{ book.title }}</h3>
+                        <p>Author: {{ book.author }}</p>
+                        <p>ISBN: {{ book.isbn }}</p>
+                        <p>Available: {{ book.quantity }}</p>
+                        <div class="book-actions">
+                            
+                            <button class="button" onclick="openModal('{{ book.title }}', '{{ book.content | escape }}')">View Content</button>
+                            <form action="{{ url_for('section_detail', section_id=section.id) }}" method="post">
+                                <input type="hidden" name="delete_book" value="{{ book.id }}">
+                                <button type="submit">Delete Book</button>
+                            </form>
+                            
+                            <form action="{{ url_for('section_detail', section_id=section.id) }}" method="post">
+                                <input type="hidden" name="book_id" value="{{ book.id }}">
+                                <input type="number" name="quantity" value="{{ book.quantity }}" min="0">
+                                <button type="submit" name="update_quantity">Update Quantity</button>
+                            </form>
+
+                            <a href="{{ url_for('update_book', book_id=book.id ) }}"><button class="button">edit this book</button></a>
+
+                        </div>
+                    </div>
+                {% else %}
+                    <p>No books in this section yet.</p>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    <div id="myModal" class="modal">
+
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2 id="modalTitle">Book Content</h2>
+            <p id="modalContent"></p>
+        </div>
+    </div>
+
+
+    <script>
+
+        var modal = document.getElementById('myModal');
+
+
+        var span = document.getElementsByClassName("close")[0];
+
+
+        function openModal(title, content) {
+            document.getElementById('modalTitle').innerText = title;
+            document.getElementById('modalContent').innerText = content;
+            modal.style.display = "block";
+        }
+
+   
+        span.onclick = function() {
+            modal.style.display = "none";
+        }
+
+        
+        window.onclick = function(event) {
+            if (event.target == modal) {
+                modal.style.display = "none";
+            }
+        }
+    </script>
+
+</body>
+</html>
+
